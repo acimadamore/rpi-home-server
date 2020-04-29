@@ -1,0 +1,18 @@
+---
+- name: Check existing volumes
+  command: docker volume ls -q
+  register: docker_volumes
+
+- name: Copy docker volumes contents
+  copy:
+    src: "docker/volumes/{{ item.path }}/"
+    dest: "/var/lib/docker/volumes/{{ item.path }}/_data/"
+    owner: "{{ ansible_user }}"
+    group: docker
+    force: "{{ always_replace_docker_volumes_files }}"
+  with_filetree: docker/volumes/
+  when: 
+    - copy_volumes 
+    - item.state == 'directory' 
+    - item.path in docker_volumes.stdout_lines
+  notify: Restart containers

@@ -1,0 +1,6 @@
+---
+- src: acimadamore.raspberry_pi
+
+- src: geerlingguy.pip
+
+- src: geerlingguy.docker_arm

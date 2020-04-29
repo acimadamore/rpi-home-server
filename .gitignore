@@ -1,0 +1,5 @@
+/docker/compose-projects/*
+!/docker/compose-projects/.gitkeep
+
+/docker/volumes/*
+!/docker/volumes/.gitkeep

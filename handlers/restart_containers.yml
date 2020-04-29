@@ -1,0 +1,7 @@
+---
+- name: Restart containers
+  docker_compose:
+    project_src: "{{ docker_compose_files_path}}/{{ item | dirname | replace('docker/compose-projects/', '') }}"
+    files: "{{ item | basename }}"
+    restarted: yes
+  with_items: "{{ docker_compose_files }}"

@@ -1,0 +1,35 @@
+---
+- hosts: raspberrypi
+  become: yes
+  remote_user: pi
+
+  vars_files:
+    - vars/raspberry_pi.yml
+    - vars/pip.yml
+    - vars/docker.yml
+
+  vars:
+    # Can't use fileglob lookup plugin due to Ansible issue #17136(ref. https://github.com/ansible/ansible/issues/17136)
+    docker_compose_files: "{{ 'docker/compose-projects/*/*.yml' | fileglob }}"
+
+    docker_compose_files_path: /home/pi/services
+    copy_volumes: true
+    always_replace_docker_compose_projects: true
+    always_replace_docker_volumes_files: true
+
+  handlers:
+    - import_tasks: handlers/restart_containers.yml
+
+  roles:
+    - acimadamore.raspberry_pi
+
+    - geerlingguy.pip
+
+    - geerlingguy.docker_arm
+
+  tasks:
+    - import_tasks: tasks/copy-and-start-docker-compose.yml
+
+    - import_tasks: tasks/copy-volumes-files.yml
+
+

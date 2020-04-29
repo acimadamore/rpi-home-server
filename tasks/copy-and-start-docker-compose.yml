@@ -1,0 +1,21 @@
+---
+- name: Create docker-compose files directory
+  file:
+    path: "{{ docker_compose_files_path }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: docker
+
+- name: Copy docker-compose projects
+  copy:
+    src: "docker/compose-projects/"
+    dest: "{{ docker_compose_files_path }}"
+    owner: "{{ ansible_user }}"
+    group: docker
+    force: "{{ always_replace_docker_compose_projects }}"
+
+- name: Run docker-compose up on every project
+  docker_compose:
+    project_src: "{{ docker_compose_files_path}}/{{ item | dirname | replace('docker/compose-projects/', '') }}"
+    files: "{{ item | basename }}"
+  with_items: "{{ docker_compose_files }}"
